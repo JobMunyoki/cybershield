@@ -188,3 +188,199 @@ cybershield/
 │
 └── README.md
 ```
+
+## Environment Variables
+
+CyberShield uses environment variables to keep sensitive configuration out of the source code.
+
+### Backend `.env.example`
+
+```env
+DJANGO_SECRET_KEY=generate-a-new-secret-key
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+
+DB_NAME=cybershield_db
+DB_USER=root
+DB_PASSWORD=your-database-password
+DB_HOST=localhost
+DB_PORT=3306
+
+CORS_ALLOWED_ORIGINS=http://localhost:5173
+CSRF_TRUSTED_ORIGINS=http://localhost:5173
+```
+
+### Frontend `.env.example`
+
+```env
+VITE_API_BASE_URL=http://127.0.0.1:8000/api
+```
+
+### Production Environment
+
+In production, the backend uses Railway environment variables and the frontend uses Vercel environment variables.
+
+Production frontend API variable:
+
+```env
+VITE_API_BASE_URL=https://cybershield-production-42cd.up.railway.app/api
+```
+
+Real `.env` files are excluded from Git and should never be committed.
+
+## Testing Summary
+
+CyberShield includes automated backend and frontend tests.
+
+### Backend Tests
+
+Backend tests cover:
+
+- Model behavior
+- API authentication
+- Pagination
+- Sorting
+- Role-based permissions
+- Incident reporting
+- Audit-log creation
+- Incident timeline creation
+- Critical alert acknowledgement and dismissal
+
+Backend test result:
+
+```text
+23 tests passed
+```
+
+Run backend tests:
+
+```bash
+cd backend
+python manage.py test core.tests -v 2
+```
+
+### Frontend Tests
+
+Frontend tests cover:
+
+- Login form rendering
+- Failed login handling
+- Successful login token storage
+- Protected route loading state
+- Unauthenticated redirects
+- Role-based route access
+- AuthContext user loading and logout
+
+Frontend test result:
+
+```text
+12 tests passed
+```
+
+Run frontend tests:
+
+```bash
+cd frontend
+npm run test:run
+```
+
+## Production Deployment
+
+### Backend
+
+The backend is deployed on Railway using:
+
+- Django
+- Django REST Framework
+- Gunicorn
+- Railway MySQL
+- WhiteNoise for static files
+- Environment variables for production configuration
+
+Production backend:
+
+```text
+https://cybershield-production-42cd.up.railway.app
+```
+
+Backend admin:
+
+```text
+https://cybershield-production-42cd.up.railway.app/admin/
+```
+
+### Frontend
+
+The frontend is deployed on Vercel using:
+
+- React
+- Vite
+- Material UI
+- Axios
+- Environment variables for the backend API URL
+
+Production frontend:
+
+```text
+https://cybershield-three-pi.vercel.app
+```
+
+## Security Notes
+
+Sensitive values are stored in environment variables and excluded from Git.
+
+The following files should not be committed:
+
+```text
+backend/.env
+frontend/.env
+```
+
+Safe example files are included:
+
+```text
+backend/.env.example
+frontend/.env.example
+```
+
+Production security improvements include:
+
+- Django `SECRET_KEY` stored outside source code
+- Database credentials stored outside source code
+- `DEBUG=False` in production
+- Railway-hosted MySQL database
+- CORS restricted to the Vercel frontend URL
+- CSRF trusted origins configured for production
+- Secure cookie settings enabled when `DEBUG=False`
+- Gunicorn used as the production server
+- WhiteNoise used for static files
+
+## Live Links
+
+Frontend:
+
+```text
+https://cybershield-three-pi.vercel.app
+```
+
+Backend Admin:
+
+```text
+https://cybershield-production-42cd.up.railway.app/admin/
+```
+
+GitHub Repository:
+
+```text
+https://github.com/JobMunyoki/cybershield
+```
+
+## Author
+
+Job Munyoki
+
+GitHub:
+
+```text
+https://github.com/JobMunyoki
+```
