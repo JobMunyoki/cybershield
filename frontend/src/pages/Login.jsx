@@ -4,17 +4,22 @@ import axios from "axios";
 import { API_BASE_URL } from "../config";
 import { useAuth } from "../context/AuthContext";
 import {
+  Alert,
   Box,
   Button,
   Card,
   CardContent,
+  CircularProgress,
+  IconButton,
+  InputAdornment,
   TextField,
   Typography,
-  Alert,
 } from "@mui/material";
 import SecurityIcon from "@mui/icons-material/Security";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 function Login() {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { refreshUser } = useAuth();
 
@@ -92,16 +97,25 @@ function Login() {
 
             <TextField
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
               fullWidth
-              margin="normal"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               required
-              slotProps={{
-                htmlInput: {
-                  "aria-label": "Password",
-                },
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      onClick={() => setShowPassword((previousValue) => !previousValue)}
+                      onMouseDown={(event) => event.preventDefault()}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
 
