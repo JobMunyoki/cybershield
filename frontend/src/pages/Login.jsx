@@ -9,7 +9,6 @@ import {
   Button,
   Card,
   CardContent,
-  CircularProgress,
   IconButton,
   InputAdornment,
   TextField,
@@ -32,13 +31,10 @@ function Login() {
     setError("");
 
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/auth/login/`,
-        {
-          username,
-          password,
-        }
-      );
+      const response = await axios.post(`${API_BASE_URL}/auth/login/`, {
+        username,
+        password,
+      });
 
       localStorage.setItem("access", response.data.access);
       localStorage.setItem("refresh", response.data.refresh);
@@ -66,9 +62,11 @@ function Login() {
         <CardContent sx={{ padding: 4 }}>
           <Box sx={{ textAlign: "center", marginBottom: 3 }}>
             <SecurityIcon sx={{ fontSize: 50, color: "#1976d2" }} />
+
             <Typography variant="h4" fontWeight="bold">
               CyberShield
             </Typography>
+
             <Typography variant="body2" color="text.secondary">
               Cybersecurity Incident & Vulnerability Management System
             </Typography>
@@ -98,17 +96,26 @@ function Login() {
             <TextField
               label="Password"
               type={showPassword ? "text" : "password"}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
               fullWidth
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
+              slotProps={{
+                htmlInput: {
+                  "aria-label": "Password",
+                },
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                      onClick={() => setShowPassword((previousValue) => !previousValue)}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                      onClick={() =>
+                        setShowPassword((previousValue) => !previousValue)
+                      }
                       onMouseDown={(event) => event.preventDefault()}
                       edge="end"
                     >
