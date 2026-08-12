@@ -1,6 +1,6 @@
 # CyberShield
 
-CyberShield is a cybersecurity incident and vulnerability management system built with Django REST Framework, React, Material UI, MySQL, Railway, and Vercel.
+CyberShield is a cybersecurity incident and vulnerability management system built with Django REST Framework, React, Material UI, PostgreSQL, Render, and Vercel.
 
 The system helps security teams track assets, report incidents, manage vulnerabilities, monitor critical alerts, record investigation timelines, and maintain audit logs.
 
@@ -10,9 +10,17 @@ Frontend:
 
 https://cybershield-three-pi.vercel.app
 
+Backend:
+
+https://cybershield-backend-0pli.onrender.com
+
 Backend Admin:
 
-https://cybershield-production-42cd.up.railway.app/admin/
+https://cybershield-backend-0pli.onrender.com/admin/
+
+Backend API Login Endpoint:
+
+https://cybershield-backend-0pli.onrender.com/api/auth/login/
 
 GitHub Repository:
 
@@ -146,9 +154,11 @@ The system supports CSV export for selected records such as assets, incidents, v
 - Django
 - Django REST Framework
 - Simple JWT Authentication
-- MySQL
+- PostgreSQL in production
+- MySQL/local database support through environment variables
 - Gunicorn
 - WhiteNoise
+- dj-database-url
 - python-dotenv
 
 ### Frontend
@@ -164,8 +174,8 @@ The system supports CSV export for selected records such as assets, incidents, v
 
 ### Deployment
 
-- Railway for Django backend
-- Railway MySQL for production database
+- Render for Django backend
+- Render PostgreSQL for production database
 - Vercel for React frontend
 
 ## Project Structure
@@ -184,6 +194,7 @@ cybershield/
 │   ├── src/
 │   ├── package.json
 │   ├── vite.config.js
+│   ├── vercel.json
 │   └── .env.example
 │
 └── README.md
@@ -206,6 +217,9 @@ DB_PASSWORD=your-database-password
 DB_HOST=localhost
 DB_PORT=3306
 
+# Render PostgreSQL production database
+DATABASE_URL=postgresql://username:password@host:5432/database_name
+
 CORS_ALLOWED_ORIGINS=http://localhost:5173
 CSRF_TRUSTED_ORIGINS=http://localhost:5173
 ```
@@ -218,12 +232,23 @@ VITE_API_BASE_URL=http://127.0.0.1:8000/api
 
 ### Production Environment
 
-In production, the backend uses Railway environment variables and the frontend uses Vercel environment variables.
+In production, the backend uses Render environment variables and the frontend uses Vercel environment variables.
 
 Production frontend API variable:
 
 ```env
-VITE_API_BASE_URL=https://cybershield-production-42cd.up.railway.app/api
+VITE_API_BASE_URL=https://cybershield-backend-0pli.onrender.com/api
+```
+
+Recommended Render backend environment variables:
+
+```env
+DJANGO_SECRET_KEY=your-production-secret-key
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=cybershield-backend-0pli.onrender.com
+DATABASE_URL=your-render-postgresql-internal-database-url
+CORS_ALLOWED_ORIGINS=https://cybershield-three-pi.vercel.app
+CSRF_TRUSTED_ORIGINS=https://cybershield-three-pi.vercel.app,https://cybershield-backend-0pli.onrender.com
 ```
 
 Real `.env` files are excluded from Git and should never be committed.
@@ -288,25 +313,43 @@ npm run test:run
 
 ### Backend
 
-The backend is deployed on Railway using:
+The backend is deployed on Render using:
 
 - Django
 - Django REST Framework
 - Gunicorn
-- Railway MySQL
+- Render PostgreSQL
 - WhiteNoise for static files
 - Environment variables for production configuration
 
 Production backend:
 
 ```text
-https://cybershield-production-42cd.up.railway.app
+https://cybershield-backend-0pli.onrender.com
 ```
 
 Backend admin:
 
 ```text
-https://cybershield-production-42cd.up.railway.app/admin/
+https://cybershield-backend-0pli.onrender.com/admin/
+```
+
+Backend API login endpoint:
+
+```text
+https://cybershield-backend-0pli.onrender.com/api/auth/login/
+```
+
+Render backend build command:
+
+```bash
+pip install -r requirements.txt && python manage.py collectstatic --noinput
+```
+
+Render backend start command:
+
+```bash
+python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
 ```
 
 ### Frontend
@@ -318,11 +361,31 @@ The frontend is deployed on Vercel using:
 - Material UI
 - Axios
 - Environment variables for the backend API URL
+- Vercel rewrite rules for React Router routes
 
 Production frontend:
 
 ```text
 https://cybershield-three-pi.vercel.app
+```
+
+Vercel production environment variable:
+
+```env
+VITE_API_BASE_URL=https://cybershield-backend-0pli.onrender.com/api
+```
+
+Vercel rewrite file:
+
+```json
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
 ```
 
 ## Security Notes
@@ -348,12 +411,13 @@ Production security improvements include:
 - Django `SECRET_KEY` stored outside source code
 - Database credentials stored outside source code
 - `DEBUG=False` in production
-- Railway-hosted MySQL database
+- Render-hosted PostgreSQL database
 - CORS restricted to the Vercel frontend URL
 - CSRF trusted origins configured for production
 - Secure cookie settings enabled when `DEBUG=False`
 - Gunicorn used as the production server
 - WhiteNoise used for static files
+- Vercel rewrite rules configured for frontend routes
 
 ## Live Links
 
@@ -363,10 +427,22 @@ Frontend:
 https://cybershield-three-pi.vercel.app
 ```
 
+Backend:
+
+```text
+https://cybershield-backend-0pli.onrender.com
+```
+
 Backend Admin:
 
 ```text
-https://cybershield-production-42cd.up.railway.app/admin/
+https://cybershield-backend-0pli.onrender.com/admin/
+```
+
+Backend API Login Endpoint:
+
+```text
+https://cybershield-backend-0pli.onrender.com/api/auth/login/
 ```
 
 GitHub Repository:
